@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { Server } from 'http';
 import { registerRoutes } from './routes/routes';
+import { Store } from './persistence/store';
 
 const env = dotenv.config();
 if (env.error != null) {
@@ -14,14 +15,34 @@ let server: Server;
 declare module 'dotenv' {
     interface DotenvParseOutput {
         SERVER_PORT?: string;
-        DB_HOST?: string;
-        DB_PORT?: string;
-        DB_USER?: string;
-        DB_NAME?: string;
+        REDIS_HOST?: string;
+        REDIS_PORT?: string;
+        REDIS_USER?: string;
+        REDIS_PASSWORD?: string;
+        REDIS_DB?: string;
     }
 }
 
+const initStore = (
+    host = 'localhost',
+    port = '6379',
+    username = 'user',
+    password = 'password',
+    dbNumber = '1'
+) => {
+    return new Store(username, password, host, port.toString(), dbNumber);
+};
+
 const initServer = async () => {
+    // DB setup
+    const store = initStore(
+        env.parsed?.REDIS_HOST,
+        env.parsed?.REDIS_PORT,
+        env.parsed?.REDIS_USER,
+        env.parsed?.REDIS_PASSWORD,
+        env.parsed?.REDIS_DB
+    );
+    // Express setup
     const app = express();
     // Logs incoming requests
     app.use(morgan('dev'));
@@ -29,7 +50,7 @@ const initServer = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     // Register application routes
-    registerRoutes(app);
+    registerRoutes(app, store);
     // Middleware for managing not existing routes
     app.use((req: express.Request, res: express.Response) => {
         res.status(404).json({ error: `${req.url} not found` });

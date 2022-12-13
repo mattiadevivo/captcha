@@ -7,7 +7,7 @@ class Store {
         password: string,
         host: string,
         port: string,
-        dbNumber: number
+        dbNumber: string
     ) {
         this.client = createClient({
             url: `redis://${username}:${password}@${host}:${port}/${dbNumber}`,
@@ -19,8 +19,8 @@ class Store {
         return await this.client.get(key);
     }
 
-    public set(key: string, value: string) {
-        return this.client.set(key, value);
+    public async set(key: string, value: string): Promise<string | null> {
+        return await this.client.set(key, value);
     }
 }
 
