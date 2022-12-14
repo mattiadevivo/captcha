@@ -30,6 +30,7 @@
     },
     "homepage": "https://github.com/mattiadevivo/captcha#readme",
     "devDependencies": {
+        "@types/chai": "^4.3.4",
         "@types/express": "^4.17.14",
         "@types/mocha": "^10.0.1",
         "@types/morgan": "^1.9.3",
@@ -37,6 +38,7 @@
         "@types/uuid": "^9.0.0",
         "@typescript-eslint/eslint-plugin": "^5.46.1",
         "@typescript-eslint/parser": "^5.46.1",
+        "chai": "^4.3.7",
         "eslint": "^8.29.0",
         "mocha": "^10.2.0",
         "prettier": "^2.8.1",
