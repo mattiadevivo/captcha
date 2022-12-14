@@ -1,8 +1,7 @@
 import { Express } from 'express';
-import { Store } from '../persistence/store';
-import { getCaptchaRouter } from './captchaRouter';
+import { captchaRouter } from './captchaRouter';
 
-const registerRoutes = (app: Express, store: Store) => {
-    app.use('/captchas', getCaptchaRouter(store));
+const registerRoutes = (app: Express) => {
+    app.use('/captchas', captchaRouter);
 };
 export { registerRoutes };

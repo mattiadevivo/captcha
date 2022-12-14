@@ -1,27 +1,33 @@
 import { createClient, RedisClientType } from 'redis';
-class Store {
-    client: RedisClientType;
 
-    constructor(
-        username: string,
-        password: string,
-        host: string,
-        port: string,
-        dbNumber: string
-    ) {
-        this.client = createClient({
-            url: `redis://${username}:${password}@${host}:${port}/${dbNumber}`,
-        });
-        this.client.on('error', (err) => console.log(err));
-    }
+let redisClient: RedisClientType;
 
-    public async get(key: string): Promise<string | null> {
-        return await this.client.get(key);
-    }
+const createDbClient = (
+    username: string,
+    password: string,
+    host: string,
+    port: string,
+    dbNumber: string
+) => {
+    redisClient = createClient({
+        url: `redis://${username}:${password}@${host}:${port}/${dbNumber}`,
+    });
+    redisClient.on('error', (err) => console.log(`Redis error: ${err}`));
+};
 
-    public async set(key: string, value: string): Promise<string | null> {
-        return await this.client.set(key, value);
-    }
-}
+const connectDb = async (): Promise<void> => {
+    return await redisClient.connect();
+};
 
-export { Store };
+const disconnectDb = async (): Promise<void> => {
+    return await redisClient.disconnect();
+};
+
+const get = async (key: string): Promise<string | null> => {
+    return await redisClient.get(key);
+};
+
+const set = async (key: string, value: string): Promise<string | null> => {
+    return await redisClient.set(key, value);
+};
+export { createDbClient, connectDb, disconnectDb, get, set };

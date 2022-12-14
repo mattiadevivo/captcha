@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { Server } from 'http';
 import { registerRoutes } from './routes/routes';
-import { Store } from './persistence/store';
+import { connectDb, createDbClient, disconnectDb } from './persistence/store';
+import { exit } from 'process';
 
 const env = dotenv.config();
 if (env.error != null) {
@@ -28,20 +29,22 @@ const initStore = (
     port = '6379',
     username = 'user',
     password = 'password',
-    dbNumber = '1'
+    dbNumber = '0'
 ) => {
-    return new Store(username, password, host, port.toString(), dbNumber);
+    createDbClient(username, password, host, port, dbNumber);
 };
 
 const initServer = async () => {
     // DB setup
-    const store = initStore(
+    initStore(
         env.parsed?.REDIS_HOST,
         env.parsed?.REDIS_PORT,
         env.parsed?.REDIS_USER,
         env.parsed?.REDIS_PASSWORD,
         env.parsed?.REDIS_DB
     );
+    // Connect db
+    await connectDb();
     // Express setup
     const app = express();
     // Logs incoming requests
@@ -50,7 +53,7 @@ const initServer = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     // Register application routes
-    registerRoutes(app, store);
+    registerRoutes(app);
     // Middleware for managing not existing routes
     app.use((req: express.Request, res: express.Response) => {
         res.status(404).json({ error: `${req.url} not found` });
@@ -68,9 +71,12 @@ initServer();
 const gracefulShutdown = () => {
     console.info('SIGTERM signal received.');
     console.log('Closing http server.');
+
     // server.close() stops accepting new connections
-    server.close(() => {
+    server.close(async () => {
         console.log('Http server closed.');
+        await disconnectDb();
+        exit(0);
     });
 };
 
