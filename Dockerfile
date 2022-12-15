@@ -1,10 +1,10 @@
 FROM node:16 as build
 WORKDIR /usr/src/app
-COPY package*.json .
+COPY package*.json ./
 RUN apt update -y && apt install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 RUN npm install -g npm
 RUN npm ci --build-from-source
-COPY . .
+COPY . ./
 RUN npm run build
 
 FROM node:16 as release
