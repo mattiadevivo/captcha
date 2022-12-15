@@ -68,16 +68,16 @@ const initServer = async () => {
 initServer();
 
 // Gracefully shutdown
-const gracefulShutdown = () => {
+const gracefulShutdown = async () => {
     console.info('SIGTERM signal received.');
     console.log('Closing http server.');
 
     // server.close() stops accepting new connections
     server.close(async () => {
         console.log('Http server closed.');
-        await disconnectDb();
-        exit(0);
     });
+    await disconnectDb();
+    exit(0);
 };
 
 process.on('SIGTERM', gracefulShutdown);
