@@ -5,44 +5,20 @@ import { Server } from 'http';
 import { registerRoutes } from './routes/routes';
 import { connectDb, createDbClient, disconnectDb } from './persistence/store';
 import { exit as exitProcess } from 'process';
+import { redisConfiguration, serverConfiguration } from './config';
 
-const env = dotenv.config();
-if (env.error != null) {
-    console.error('Error while loading env variables from file');
-    process.exit(1);
-}
+dotenv.config();
+
 let server: Server;
 
-declare module 'dotenv' {
-    interface DotenvParseOutput {
-        SERVER_PORT?: string;
-        REDIS_HOST?: string;
-        REDIS_PORT?: string;
-        REDIS_USER?: string;
-        REDIS_PASSWORD?: string;
-        REDIS_DB?: string;
-    }
-}
-
-const initStore = (
-    host = 'localhost',
-    port = '6379',
-    username = 'user',
-    password = 'password',
-    dbNumber = '0'
-) => {
+const initStore = () => {
+    const { username, password, host, port, dbNumber } = redisConfiguration;
     createDbClient(username, password, host, port, dbNumber);
 };
 
 const initServer = async () => {
     // DB setup
-    initStore(
-        env.parsed?.REDIS_HOST,
-        env.parsed?.REDIS_PORT,
-        env.parsed?.REDIS_USER,
-        env.parsed?.REDIS_PASSWORD,
-        env.parsed?.REDIS_DB
-    );
+    initStore();
     // Connect db
     await connectDb();
     // Express setup
@@ -59,9 +35,8 @@ const initServer = async () => {
         res.status(404).json({ error: `${req.url} not found` });
     });
 
-    const serverPort = env.parsed?.SERVER_PORT ?? '3000';
-    server = app.listen(serverPort, () => {
-        console.log(`Server stared at port ${serverPort}`);
+    server = app.listen(serverConfiguration.port, () => {
+        console.log(`Server stared at port ${serverConfiguration.port}`);
     });
 };
 

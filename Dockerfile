@@ -1,4 +1,4 @@
-FROM node:16-alpine as build
+FROM node:16 as build
 WORKDIR /usr/src/app
 COPY package*.json .
 RUN apt update -y && apt install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
@@ -7,7 +7,7 @@ RUN npm ci --build-from-source
 COPY . .
 RUN npm run build
 
-FROM node:16-alpine as release
+FROM node:16 as release
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN apt update -y && apt install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev

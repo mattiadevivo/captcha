@@ -16,6 +16,9 @@ It uses Redis as a storage for captchas since the service does not store the cap
 
 ### Docker run
 
+-   build docker image with `docker build -t captcha .`
+-   run docker image with `docker run -d captcha`
+
 ## Run Tests
 
 Test are written using `mocha` (and `chai` as assertion library) and resides under `test` folder.
@@ -23,4 +26,4 @@ You can run tests using `npm run test`.
 
 ## Want to see the Captcha Image?
 
-Copy and paste from `captchaImage` value from json body of POST `captchas/` response and paste it [here](https://onlineimagetools.com/convert-data-uri-to-image).
+Copy and paste the `captchaImage` value from json body of POST `captchas/` response and paste it [here](https://onlineimagetools.com/convert-data-uri-to-image) (do not include `"`).
