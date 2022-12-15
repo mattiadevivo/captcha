@@ -3,6 +3,11 @@
 Express application used for Captcha creation and validation.
 It uses Redis as a storage for captchas since the service does not store the captcha image but only its correct word together with its key (and for the sake of simplicity).
 
+# Missing things
+
+-   instructions regarding Docker
+-   upload Docker image
+
 ## Run locally
 
 -   run `npm install` to install dependencies
