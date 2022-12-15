@@ -27,11 +27,9 @@ captchaRouter.put(
             const isCorrect = await validateCaptcha(get, captchaId, userGuess);
             return isCorrect
                 ? res.status(200).json()
-                : res
-                      .status(401)
-                      .json({
-                          error: 'captcha does not match or does not exist',
-                      });
+                : res.status(401).json({
+                      error: 'captcha does not match or does not exist',
+                  });
         } catch (err) {
             res.status(500).send({
                 error: 'error while validating captcha',
