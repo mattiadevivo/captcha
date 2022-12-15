@@ -3,26 +3,18 @@
 Express application used for Captcha creation and validation.
 It uses Redis as a storage for captchas since the service does not store the captcha image but only its correct word together with its key (and for the sake of simplicity).
 
-# Missing things
+## Run
 
--   instructions regarding Docker
--   upload Docker image
+-   run `docker-compose up -d` to start both _Redis container_ and _captcha service container_
+-   captcha service will be listening at `http//localhost:3000`
+-   see [openapi.yml](./openapi.yml) for endpoints documentation
 
-## Run locally
-
--   run `npm install` to install dependencies
--   run `docker-compose up -d` to start Redis Docker container used as cache storage by the service
--   run `npm run dev` to run the project locally
-
-### Docker run
-
--   build docker image with `docker build -t captcha .`
--   run docker image with `docker run -d captcha`
+You can also pull the image with `docker pull mattiadevivo/captcha:latest` since the image is deployed in a public [DockerHub repo](https://hub.docker.com/r/mattiadevivo/captcha).
 
 ## Run Tests
 
 Test are written using `mocha` (and `chai` as assertion library) and resides under `test` folder.
-You can run tests using `npm run test`.
+You can run tests using `npm run test` (first install dependencies using `npm install`).
 
 ## Want to see the Captcha Image?
 
