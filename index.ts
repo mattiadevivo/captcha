@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import { Server } from 'http';
 import { registerRoutes } from './routes/routes';
 import { connectDb, createDbClient, disconnectDb } from './persistence/store';
-import { exit } from 'process';
+import { exit as exitProcess } from 'process';
 
 const env = dotenv.config();
 if (env.error != null) {
@@ -77,7 +77,7 @@ const gracefulShutdown = async () => {
         console.log('Http server closed.');
     });
     await disconnectDb();
-    exit(0);
+    exitProcess(0);
 };
 
 process.on('SIGTERM', gracefulShutdown);

@@ -1,14 +1,14 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { createCaptcha, validateCaptcha } from '../services/captchaService';
-import { get, set } from '../persistence/store';
+import { get as getCaptcha, set as storeCaptcha } from '../persistence/store';
 
 const captchaRouter = express.Router();
 
 captchaRouter.use(bodyParser.json());
 captchaRouter.post('/', async (_req: Request, res: Response) => {
     try {
-        const captcha = await createCaptcha(set);
+        const captcha = await createCaptcha(storeCaptcha);
         return res.status(200).json(captcha);
     } catch (err) {
         console.log(err);
@@ -24,7 +24,11 @@ captchaRouter.put(
         try {
             const captchaId = req.params.captchaId;
             const userGuess = req.body.captcha;
-            const isCorrect = await validateCaptcha(get, captchaId, userGuess);
+            const isCorrect = await validateCaptcha(
+                getCaptcha,
+                captchaId,
+                userGuess
+            );
             return isCorrect
                 ? res.status(200).json()
                 : res.status(401).json({
