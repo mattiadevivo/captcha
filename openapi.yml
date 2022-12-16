@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: captcha
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /captchas/:
+    post:
+      tags:
+        - default
+      summary: Creates a new captcha
+      responses:
+        "200":
+          description: Returns object containing captcha id and image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  captchaImage:
+                    type: string
+        "500":
+          description: Error during captcha creation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /captchas/{id}:
+    put:
+      tags:
+        - default
+      summary: Validates captcha value
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                captcha:
+                  type: string
+              example:
+                captcha: EWYSZS
+      responses:
+        "200":
+          description: Captcha correctly validated
+        "401":
+          description: Captcha value is not correct or captcha not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "500":
+          description: Error during captcha validation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string

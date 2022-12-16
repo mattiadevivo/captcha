@@ -1,7 +1,17 @@
 version: '3.3'
 services:
-  redis:
-    container_name: redis
-    image: redis:6
-    ports:
-      - "127.0.0.1:6379:6379"
+    redis:
+        container_name: redis
+        image: redis:7
+        ports:
+            - '127.0.0.1:6379:6379'
+    captcha-api:
+        container_name: captcha-api
+        build: ./
+        depends_on:
+            - redis
+        environment:
+            - REDIS_HOST=redis
+        ports:
+          - '127.0.0.1:3000:3000'
+
