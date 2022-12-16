@@ -6,6 +6,7 @@ import { registerRoutes } from './routes/routes';
 import { connectDb, createDbClient, disconnectDb } from './persistence/store';
 import { exit as exitProcess } from 'process';
 import { redisConfiguration, serverConfiguration } from './config';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ const initServer = async () => {
     // Parse incoming request body and append data to `req.body`
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
+    // enable cors
+    app.use(cors());
     // Register application routes
     registerRoutes(app);
     // Middleware for managing not existing routes
